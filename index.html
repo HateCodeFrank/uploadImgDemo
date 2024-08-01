@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #drop-area {
+        #dropArea {
             border: 2px dashed #ccc;
             border-radius: 20px;
             width: 480px;
@@ -14,25 +14,31 @@
             text-align: center;
             user-select: none;
         }
+        #fileName{
+
+            color: #f60
+        }
         .img-wrapper {
-            width: 480px;
-            padding: 120px;
+            width: 720px;
             margin: 20px auto;
             border: 2px dashed #ccc;
             border-radius: 20px;
-            height: 120px;
+            height: 360px;
             display: flex;
             align-items: center;
             justify-content: center;
             user-select: none;
         }
         #img {
-            width: 100%;
+            width: auto;
+            height: 100%;
         }
     </style>
 </head>
 <body>
-    <div id="drop-area">放进来或者拖进来</div>
+    <div id="dropArea">放进来或者拖进来
+        <span id="fileName"></span>
+    </div>
     <div class="img-wrapper">
         <img src="" id="img" alt="">
     </div>
