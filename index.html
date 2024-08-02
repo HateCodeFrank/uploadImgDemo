@@ -9,7 +9,7 @@
             border: 2px dashed #ccc;
             border-radius: 20px;
             width: 480px;
-            margin: 100px auto;
+            margin: 0 auto;
             padding: 120px;
             text-align: center;
             user-select: none;
@@ -33,14 +33,27 @@
             width: auto;
             height: 100%;
         }
+        .btn-wrapper{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div id="dropArea">放进来或者拖进来
+    <div id="dropArea">
+        放进来或者拖进来
         <span id="fileName"></span>
     </div>
     <div class="img-wrapper">
         <img src="" id="img" alt="">
+    </div>
+    <div class="img-wrapper" id="result">
+        
+    </div>
+    <div class="btn-wrapper">
+        <button id="btnA">A灰阶处理</button>
+        <button id="btnB">B下载灰阶图片</button>
+        <button id="btnC">C复制Base64灰阶图片</button>
+        <button id="btnD">D生成base64无序图</button>
     </div>
     <script src="/index.js" type="module"></script>
 </body>
