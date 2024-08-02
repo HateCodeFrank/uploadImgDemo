@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,40 +9,41 @@
         #dropArea {
             border: 2px dashed #ccc;
             border-radius: 20px;
-            width: 480px;
-            margin: 100px auto;
-            padding: 120px;
+            width: 720px;
+            height: 360px;
+            margin: 0 auto;
             text-align: center;
             user-select: none;
         }
-        #fileName{
+
+        #fileName {
 
             color: #f60
         }
-        .img-wrapper {
+
+        #canvas {
             width: 720px;
-            margin: 20px auto;
-            border: 2px dashed #ccc;
-            border-radius: 20px;
             height: 360px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
         }
-        #img {
-            width: auto;
-            height: 100%;
+
+
+        .btn-wrapper {
+            text-align: center;
         }
     </style>
 </head>
+
 <body>
-    <div id="dropArea">放进来或者拖进来
-        <span id="fileName"></span>
+    <div id="dropArea">
+        <canvas id="canvas"></canvas>
     </div>
-    <div class="img-wrapper">
-        <img src="" id="img" alt="">
+    <div class="btn-wrapper">
+        <button id="btnA">A灰阶处理</button>
+        <button id="btnB">B下载灰阶图片</button>
+        <button id="btnC">C复制Base64灰阶图片</button>
+        <button id="btnD">D生成base64无序图</button>
     </div>
     <script src="/index.js" type="module"></script>
 </body>
+
 </html>

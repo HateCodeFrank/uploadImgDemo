@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .image-area {
+      width: 500px;
+      height: 300px;
+      padding: 5px;
+      border: 5px dashed #ccc;
+      border-radius: 5px;
+    }
+    .uploadInput {
+      display: none;
+    }
+    #fileCanvas {
+      width: 500px;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="image-area">
+    <canvas id="fileCanvas"></canvas>
+  </div>
+  <input type="file" id="uploadInput" class="uploadInput" accept=".png"/>
+  <button onclick="grey()">A</button>
+  <button onclick="download()">B</button>
+  <button onclick="toBase64()">C</button>
+  <button onclick="compress()">D</button>
+  <button onclick="restore()">E</button>
+
+    <canvas id="canvas"></canvas>
+
+  </svg>
+
+</body>
+
+<script>
+
+  const imageArea = document.querySelector('.image-area');
+  const uploadInput = document.getElementById('uploadInput');
+  imageArea.addEventListener('click', (e) => {
+    uploadInput.click()
+  })
+
+  uploadInput.addEventListener('change', (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+    handleFile(file)
+  })
+
+  imageArea.addEventListener('dragover', (e) => {
+    e.preventDefault()
+  })
+
+  imageArea.addEventListener('drop', (e) => {
+    e.preventDefault()
+    console.log('拖拽成功', e.dataTransfer.files[0]);
+    const file = e.dataTransfer.files[0];
+    handleFile(file)
+  })
+
+  let status = 0
+  let fileCanvas
+  let ctx
+  let width, height
+  const handleFile = (file) => {
+    if (file.type == 'image/png') {
+      console.log('上传成功');
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        console.log(e);
+        if (typeof e.target.result === 'string') {
+          fileCanvas = document.getElementById('fileCanvas')
+          ctx = fileCanvas.getContext('2d')
+          const image = new Image()
+          image.onload = () => {
+            fileCanvas.width = image.width
+            fileCanvas.height = image.height
+            width = image.width
+            height = image.height
+            ctx.drawImage(image, 0, 0)
+            status = 1
+          }
+          image.src = e.target.result
+        }
+      }
+      reader.readAsDataURL(file)
+    } else {
+      alert('必须上传png')
+    }
+  }
+
+  const grey = () => {
+    if (status == 1) {
+      const data = ctx.getImageData(0, 0, width, height)
+      console.log(data, 'grey');
+      for (let i = 0; i < data.data.length; i += 4) {
+        const avg = (data.data[i] + data.data[i + 1] + data.data[i + 2]) / 3
+        data.data[i] = avg
+        data.data[i + 1] = avg
+        data.data[i + 2] = avg
+      }
+      ctx.putImageData(data, 0, 0)
+    } else {
+      alert('请先上传图片')
+    }
+  }
+
+  const download = () => {
+    if (status == 1) {
+      const a = document.createElement('a')
+      a.href = fileCanvas.toDataURL('image/png')
+      a.download = 'processed_image.png'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    } else {
+      alert('请先上传图片')
+    }
+  }
+
+  const toBase64 = () => {
+    if (status == 1) {
+      const base64 = fileCanvas.toDataURL('image/png')
+      console.log(base64);
+      navigator.clipboard.writeText(base64)
+      alert('Base64 copied to clipboard.')
+    } else {
+      alert('请先上传图片')
+    }
+  }
+  
+  const compress = () => {
+    if (status == 1) {
+      const base64 = fileCanvas.toDataURL('image/png')
+      const data = ctx.getImageData(0, 0, width, height)
+      const pixel = []
+
+      for (let i = 0; i < base64.length; i++) {
+        const a =  base64[i]
+        pixel.push(a.charCodeAt(0))
+      }
+      console.log(pixel.length);
+      const r = base64.length % 4
+      for (let i = 0; i < 4 - r; i++) {
+        pixel.push(255) 
+      }
+      const l = Math.ceil(Math.pow((pixel.length / 4), 0.5))
+      for (let i = pixel.length / 4; i < l * l; i++) {
+        pixel.push(255)
+        pixel.push(255) 
+        pixel.push(255)
+        pixel.push(255)
+      }
+      console.log(pixel.length,2);
+      // data.data = pixel
+      // data.height = l
+      // data.width = l\
+      const newData = ctx.createImageData(l, l)
+      console.log(newData);
+      // newData.data = pixel
+      for (let i = 0; i < newData.data.length; i ++) {
+        newData.data[i] = pixel[i]
+      }
+      fileCanvas.width = l
+      fileCanvas.height = l
+      ctx.putImageData(newData, 0, 0)
+    } else {
+      alert('请先上传图片')
+    }
+  }
+
+  // const restore = () => {
+  //   if (status == 1) {
+  //     const data = ctx.getImageData(0, 0, width, height)
+  //     let base64Encoded = '';
+  //     for (let i = 0; i < data.data.length; i += 1024) {
+  //         const chunk = data.data.subarray(i, i + 1024);
+  //         base64Encoded += String.fromCharCode.apply(null, chunk);
+  //     }
+  //     base64Encoded = btoa(base64Encoded);
+  //     const base64EncodedArr = base64Encoded.split(',')
+  //     const base64 = fileCanvas.toDataURL('image/png')
+  //     const base64Arr = base64.split(',')
+  //     if (base64EncodedArr[0] == base64Arr[0]) {
+  //       ctx.clearRect(0, 0, width, height)
+  //       const image = new Image()
+  //       image.src = base64
+  //       image.onload = () => {
+  //         fileCanvas.width = image.width
+  //         fileCanvas.height = image.height
+  //         width = image.width
+  //         height = image.height
+  //         ctx.drawImage(image, 0, 0)
+  //         status = 1
+  //       }
+  //     }
+  //   } else {
+  //     alert('请先上传图片')
+  //   }
+  // }
+
+</script>
+</html>
